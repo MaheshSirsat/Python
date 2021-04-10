@@ -1,0 +1,90 @@
+from time import sleep
+from networkx import Graph,spring_layout,get_edge_attributes,draw_networkx_edge_labels,draw_networkx
+from matplotlib.pyplot import show,figure
+#main entry
+print("******KRUSKAL Algorithm for MST******")
+print("No. of vertices ")
+Vertices=int(input())
+print("No. of edges ")
+
+Edges=int(input())
+#print(Vertices,Edge)
+Memory=[]
+print("\n------------------------------------------\n")
+#storing maindata
+for i in range(Edges):
+    try:
+        temp1=int(input("edge from a vertex(Source)-->"))
+        temp2=int(input("edge to a vertex(Destination)-->"))
+        temp3=int(input("edge from a weight of that edge-->"))
+        Memory.append([temp3,temp1,temp2])
+        if temp1<=0 or temp2<=0 or temp3<=0:
+            raise ZeroDivisionError
+    except ZeroDivisionError:
+        print("Value must be grather than 0")
+        sleep(20)
+        exit(0)
+
+    except ValueError:
+        print("XXXXXXXXXX Required input only in INTEGER Format XXXXXXXXXXXX")
+        sleep(10)
+        exit(0)
+    print("**********************************")
+#Sorting w.r.t weight
+
+count=0
+Memory.sort()
+for i in Memory:
+    a=i[0]
+    b=i[1]
+    c=i[2]
+    i[0]=b
+    i[1]=c
+    i[2]=a
+#for i in Memory:
+#Creating a function to find parent  index
+nodes=[]
+for i in range(1,Vertices+1):
+    nodes.append([i])
+
+def parent(a):
+    for i in nodes:
+        for j in i:
+            if j==a:
+                return nodes.index(i)
+#print(parent(2))
+count=0
+Result=[]
+for k in Memory:
+    temp1,temp2=k[0],k[1]
+    a=parent(temp1)
+    b=parent(temp2)
+
+    if a!=b:
+        #print(nodes)
+        #print(temp1,"-->",a)
+        #print(temp2,'--->',b)
+        count=count+1
+        nodes[a].extend(nodes[b])
+        nodes.remove(nodes[b])
+        Result.append([temp1,temp2,k[2]])
+    if count==Vertices-1:
+        break
+print("     ",'Vertice','     ',"Edge",'     ',"Weight")
+sum=0
+for i in range(Vertices-1):
+    print("        ",Result[i][0],"       ",Result[i][1],"       ",Result[i][2])
+    sum=sum+Result[i][2]
+print("     --------------------------------")
+print("             Total Weight:-",sum)
+print("***************Thank You*********************")
+#Designing Graph
+G=Graph()
+for i in Result:
+    G.add_edge(i[0],i[1],weight=i[2])
+pos=spring_layout(G)
+weight=get_edge_attributes(G,'weight')
+figure()
+draw_networkx(G,pos)
+draw_networkx_edge_labels(G,pos,edge_labels=weight)
+show()
