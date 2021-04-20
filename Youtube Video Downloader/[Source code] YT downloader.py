@@ -1,3 +1,6 @@
+#pip install pytube
+#pip install Tkinter
+
 from tkinter import Label,Button,Tk,StringVar,Entry
 from os import getcwd
 from pytube import YouTube
